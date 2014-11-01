@@ -1,9 +1,9 @@
 # [Euradionantes.eu](http://www.euradionantes.eu) Web Platform
 
 
-Initiated here [DILL44/euradio](https://github.com/DILL44/euradio), 
-built atop [Symfony2](http://symfony.com) & [Sonata Project](http://sonata-project.org)
+Built atop [Symfony2](http://symfony.com) & [Sonata Project](http://sonata-project.org).
 
+Initiated [here, 2 years ago](https://github.com/DILL44/euradio), currently in a new WIP state,
 
 ## Installing via GitHub
 
