@@ -5,7 +5,7 @@ built atop [Symfony2](http://symfony.com) & [Sonata Project](http://sonata-proje
 
 # WARNING: WORK IN PROCESS
 
-See *branch 2.0*
+See *[2.0 branch](https://github.com/ronanguilloux/euradionantes/tree/2.0)*
 
 
 License Information
