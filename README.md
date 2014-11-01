@@ -5,17 +5,6 @@ Initiated here [DILL44/euradio](https://github.com/DILL44/euradio),
 built atop [Symfony2](http://symfony.com) & [Sonata Project](http://sonata-project.org)
 
 
-## Build status
-
-[![License](https://poser.pugx.org/ronanguilloux/euradionantes/license.svg)](https://packagist.org/packages/ronanguilloux/euradionantes)
-[![Latest Stable Version](https://poser.pugx.org/ronanguilloux/euradionantes/v/stable.svg)](https://packagist.org/packages/ronanguilloux/euradionantes)
-[![Latest Unstable Version](https://poser.pugx.org/ronanguilloux/euradionantes/v/unstable.svg)](https://packagist.org/packages/ronanguilloux/euradionantes)
-[![Build Status](https://secure.travis-ci.org/ronanguilloux/euradionantes.png?branch=master)](http://travis-ci.org/ronanguilloux/euradionantes)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/ronanguilloux/euradionantes/badges/quality-score.png?s=db3d0ec70de304f743065f3b628c809c4a48d46f)](https://scrutinizer-ci.com/g/ronanguilloux/euradionantes/) [![SensioLabsInsight](https://insight.sensiolabs.com/projects/fde42adb-344d-4055-b78d-20b598040ac8/mini.png)](https://insight.sensiolabs.com/projects/fde42adb-344d-4055-b78d-20b598040ac8)
-
-Continously inspecting results (phpdoc, phpmd, phpcc, etc.) available on [Scrutinizer CI](https://scrutinizer-ci.com/g/ronanguilloux/euradionantes/inspections)
-
-
 ## Installing via GitHub
 
 ```bash
