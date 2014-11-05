@@ -78,19 +78,19 @@ sonata_admin:
         groups:
 
             # Prototype
-            id:
-                label:                ~
-                label_catalogue:      ~
-                items:                []
-                item_adds:            []
-                roles:                []
+            #id:
+            #    label:                ~
+            #    label_catalogue:      ~
+            #    items:                []
+            #    item_adds:            []
+            #    roles:                []
         blocks:
-            type:                 ~
-            settings:
+            #type:                 ~
+            #settings:
 
                 # Prototype
-                id:                   []
-            position:             right
+                #id:                   []
+            #position:             right
     admin_services:
 
         # Prototype
@@ -136,38 +136,6 @@ sonata_admin:
         pager_results:        SonataAdminBundle:Pager:results.html.twig
         tab_menu_template:    SonataAdminBundle:Core:tab_menu_template.html.twig
 
-    assets:
-        stylesheets:
-            # Defaults:
-            - bundles/sonatacore/vendor/bootstrap/dist/css/bootstrap.min.css
-            - bundles/sonatacore/vendor/components-font-awesome/css/font-awesome.min.css
-            - bundles/sonatacore/vendor/ionicons/css/ionicons.min.css
-            - bundles/sonataadmin/vendor/AdminLTE/css/AdminLTE.css
-            - bundles/sonatacore/vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css
-            - bundles/sonataadmin/vendor/jqueryui/themes/base/jquery-ui.css
-            - bundles/sonatacore/vendor/select2/select2.css
-            - bundles/sonatacore/vendor/select2/select2-bootstrap.css
-            - bundles/sonataadmin/vendor/x-editable/dist/bootstrap3-editable/css/bootstrap-editable.css
-            - bundles/sonataadmin/css/styles.css
-            - bundles/sonataadmin/css/layout.css
-            - bundles/sonataadmin/css/tree.css
-
-        javascripts:
-            # Defaults:
-            - bundles/sonatacore/vendor/jquery/dist/jquery.min.js
-            - bundles/sonataadmin/vendor/jquery.scrollTo/jquery.scrollTo.min.js
-            - bundles/sonatacore/vendor/moment/min/moment.min.js
-            - bundles/sonatacore/vendor/bootstrap/dist/js/bootstrap.min.js
-            - bundles/sonatacore/vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js
-            - bundles/sonataadmin/vendor/jqueryui/ui/minified/jquery-ui.min.js
-            - bundles/sonataadmin/vendor/jqueryui/ui/minified/i18n/jquery-ui-i18n.min.js
-            - bundles/sonataadmin/jquery/jquery.form.js
-            - bundles/sonataadmin/jquery/jquery.confirmExit.js
-            - bundles/sonataadmin/vendor/x-editable/dist/bootstrap3-editable/js/bootstrap-editable.min.js
-            - bundles/sonatacore/vendor/select2/select2.min.js
-            - bundles/sonataadmin/App.js
-            - bundles/sonataadmin/Admin.js
-            - bundles/sonataadmin/treeview.js
 
     extensions:
 
@@ -295,7 +263,7 @@ sonata_media:
                 - sonata.media.provider.youtube
                 - sonata.media.provider.image
                 - sonata.media.provider.file
-                - sonata.media.provider.podcast # custom
+                #- sonata.media.provider.podcast # custom
 
             formats:
                 big: { width: 620 ,  quality: 70}
@@ -340,13 +308,13 @@ sonata_news:
             template: 'SonataNewsBundle:Mail:comment_notification.txt.twig'
 
     # v1:
-    class:
-        post:       Application\Sonata\NewsBundle\Entity\Post
-        tag:        Application\Sonata\NewsBundle\Entity\Tag
-        comment:    Application\Sonata\NewsBundle\Entity\Comment
-        category:   Application\Sonata\NewsBundle\Entity\Category
-        media:      Application\Sonata\MediaBundle\Entity\Media
-        user:       Application\Sonata\UserBundle\Entity\User
+    #class:
+    #    post:       Application\Sonata\NewsBundle\Entity\Post
+    #    tag:        Application\Sonata\NewsBundle\Entity\Tag
+    #    comment:    Application\Sonata\NewsBundle\Entity\Comment
+    #    category:   Application\Sonata\NewsBundle\Entity\Category
+    #    media:      Application\Sonata\MediaBundle\Entity\Media
+    #    user:       Application\Sonata\UserBundle\Entity\User
     # /v1
 
 # Sonata Notification
