@@ -60,6 +60,10 @@ class AppKernel extends Kernel
             new Sonata\NewsBundle\SonataNewsBundle(),
             new Application\Sonata\NewsBundle\ApplicationSonataNewsBundle(),
 
+            // JMS Security (legacy use from v1)
+            new JMS\AopBundle\JMSAopBundle(),
+            new JMS\SecurityExtraBundle\JMSSecurityExtraBundle(),
+            new JMS\DiExtraBundle\JMSDiExtraBundle($this),
 
 
         );

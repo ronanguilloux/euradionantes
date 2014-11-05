@@ -88,8 +88,11 @@ mysqlinfo: dumps
 	@echo "mysql --user=${DB_USER} --password=${DB_PASSWORD} ${DB_NAME}"
 
 data: vendor/autoload.php
-#	@echo "Install initial datas..."
+	@echo "Install initial datas..."
 #	@php app/console dbal:data:initialize --purge
+	@php app/console fos:user:create admin --super-admin
+	@php app/console fos:user:promote admin ROLE_SUPER_ADMIN
+	@php app/console fos:user:activate admin
 
 fixtures: vendor/autoload.php
 #	@echo "Install fixtures in db..."
