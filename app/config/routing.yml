@@ -44,6 +44,10 @@ sonata_user:
     resource: '@SonataUserBundle/Resources/config/routing/admin_security.xml'
     prefix: /admin
 
+# Required in legacy:
+sonata_user_impersonating:
+    pattern: /admin/dashboard
+    defaults: { _controller: SonataAdminBundle:Core:dashboard }
 
 ## SONATA MEDIA
 
