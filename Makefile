@@ -78,7 +78,7 @@ integration:
 
 dumps:
 	@echo "Creating dump folder for SQL exports..."
-	@mkdir ./dumps
+	@mkdir -p ./dumps/remote
 
 mysqldump: dumps
 	@echo "Dumping existing db into ./dumps ..."
@@ -86,6 +86,17 @@ mysqldump: dumps
 
 mysqlinfo: dumps
 	@echo "mysql --user=${DB_USER} --password=${DB_PASSWORD} ${DB_NAME}"
+
+dumps/remote/sql:
+	@echo "Fetching sql dump from remote backup into dumps/remote/sql..."
+	@scp euradion@176.31.243.202:/var/www/backup_bdd/euradionantes_prod_11-15--12.sql.gz ./dumps/remote/sql.gz
+	gunzip ./dumps/remote/sql.gz
+
+mysqlimport: dumps/remote/sql dropDb
+	@echo "Importing remote sql backup into db..."
+	@mysql --user=${DB_USER} --password=${DB_PASSWORD} -e 'CREATE DATABASE ${DB_NAME}' 2>/dev/null
+	@mysql --user=${DB_USER} --password=${DB_PASSWORD} ${DB_NAME} < dumps/remote/sql 2>/dev/null
+
 
 data: vendor/autoload.php
 	@echo "Install initial datas..."
@@ -123,18 +134,17 @@ pull:
 
 dropDb: vendor/autoload.php mysqldump
 	@echo
-	@echo "Drop database..."
+	@echo "Dropping database..."
 	@php app/console doctrine:database:drop --force
 
 createDb: vendor/autoload.php
 	@echo
-	@echo "Create database..."
+	@echo "Creating database..."
 	@php app/console doctrine:database:create
-	@php app/console doctrine:schema:update --force
 
 schemaDb: vendor/autoload.php mysqldump
 	@echo
-	@echo "Configure database schema..."
+	@echo "Configuring database schema..."
 	@php app/console doctrine:schema:update --force
 
 assets:
