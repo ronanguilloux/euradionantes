@@ -37,6 +37,12 @@ Run install (will build the autoloading):
 ```
 
 
+## Importing legacy v1 database and applying schema+data updates
+
+```bash
+    $ make mysqlimport
+```
+
 ## Tests
 
 Unit testing:

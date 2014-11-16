@@ -111,32 +111,35 @@ mysqlimport: importRemote
 
 	@echo
 	@echo "Exporting collections from news__post..."
-	@mysql --user=${DB_USER} --password=${DB_PASSWORD} ${DB_NAME} -e "SELECT CONCAT('UPDATE news__post SET category_id=', COALESCE(category_id, 'NULL'), ' WHERE id=', id, ';') from news__post" > dumps/upgrade/v1_news__post_tmp.sql
+	@mysql --user=${DB_USER} --password=${DB_PASSWORD} ${DB_NAME} -e "SELECT CONCAT('UPDATE news__post SET collection_id=', COALESCE(category_id, 'NULL'), ' WHERE id=', id, ';') from news__post" > dumps/upgrade/v1_news__post_tmp.sql 2>/dev/null
 	@echo "Removing first line & trailing comma from news__post dump..."
-	@tail -n +2 dumps/upgrade/v1_news__post_tmp.sql > dumps/upgrade/v2_news__post_category
+	@tail -n +2 dumps/upgrade/v1_news__post_tmp.sql > dumps/upgrade/v2_news__post_collection
 
 	@echo
 	@echo "Applying new schema updates..."
-	@mysql --user=${DB_USER} --password=${DB_PASSWORD} ${DB_NAME} < doc/upgrade/v1tov2.sql
+	@mysql --user=${DB_USER} --password=${DB_PASSWORD} ${DB_NAME} < doc/upgrade/v1tov2.sql 2>/dev/null
 	@$(MAKE) schemaDb
 
 	@echo
-	@echo "Copying news__tag rows into classification__tag..."
+	@echo "Re-importing news__tag rows into classification__tag prepared dump..."
 	@sed -e "s/news__tag/classification__tag/g" dumps/upgrade/v1_news__tag.sql > dumps/upgrade/v2_classification__tag.sql
-	@mysql --user=${DB_USER} --password=${DB_PASSWORD} ${DB_NAME} < dumps/upgrade/v2_classification__tag.sql
+	@mysql --user=${DB_USER} --password=${DB_PASSWORD} ${DB_NAME} < dumps/upgrade/v2_classification__tag.sql 2>/dev/null
 
 	@echo
-	@echo "Re-importing news__post_tag using dump..."
-	@mysql --user=${DB_USER} --password=${DB_PASSWORD} ${DB_NAME} < dumps/upgrade/v1_news__post_tag.sql
+	@echo "Re-importing news__post_tag using raw dump..."
+	@mysql --user=${DB_USER} --password=${DB_PASSWORD} ${DB_NAME} < dumps/upgrade/v1_news__post_tag.sql 2>/dev/null
 
 	@echo
-	@echo "Re-importing classifications using prepared SQL upgrade file..."
-	@mysql --user=${DB_USER} --password=${DB_PASSWORD} ${DB_NAME} < doc/upgrade/v2_classification__category.sql
+	@echo "Importing classification_collection using prepared SQL upgrade file..."
+	@mysql --user=${DB_USER} --password=${DB_PASSWORD} ${DB_NAME} < doc/upgrade/v2_classification__collection.sql 2>/dev/null
+
+	@echo
+	@echo "Re-importing news__post collection joins using prepared dump..."
+	@mysql --user=${DB_USER} --password=${DB_PASSWORD} ${DB_NAME} < dumps/upgrade/v2_news__post_collection 2>/dev/null
 
 	@echo
 	@echo "Removing temporary sql dumps..."
-#	@rm dumps/upgrade/*.sql
-#	@rm dumps/upgrade/v1_news__post_update
+	@rm dumps/upgrade/*
 
 data: vendor/autoload.php
 	@echo
