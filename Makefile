@@ -79,26 +79,44 @@ integration:
 dumps:
 	@echo "Creating dump folder for SQL exports..."
 	@mkdir -p ./dumps/remote
+	@mkdir -p ./dumps/upgrade
 
 mysqldump: dumps
+	@echo
 	@echo "Dumping existing db into ./dumps ..."
 	@mysqldump --user=${DB_USER} --password=${DB_PASSWORD} ${DB_NAME} > dumps/${NOW}.sql 2>/dev/null
 
 mysqlinfo: dumps
+	@echo
 	@echo "mysql --user=${DB_USER} --password=${DB_PASSWORD} ${DB_NAME}"
 
 dumps/remote/sql:
+	@echo
 	@echo "Fetching sql dump from remote backup into dumps/remote/sql..."
-	@scp euradion@176.31.243.202:/var/www/backup_bdd/euradionantes_prod_11-15--12.sql.gz ./dumps/remote/sql.gz
+	@scp euradion@176.31.243.202:/var/www/backup_bdd/euradionantes_prod_11-15--12.sql.gz dumps/remote/sql.gz
 	gunzip ./dumps/remote/sql.gz
 
-mysqlimport: dumps/remote/sql dropDb
+importRemote: dumps/remote/sql dropDb
+	@echo
 	@echo "Importing remote sql backup into db..."
 	@mysql --user=${DB_USER} --password=${DB_PASSWORD} -e 'CREATE DATABASE ${DB_NAME}' 2>/dev/null
 	@mysql --user=${DB_USER} --password=${DB_PASSWORD} ${DB_NAME} < dumps/remote/sql 2>/dev/null
 
+mysqlimport: importRemote
+	@echo
+	@echo "Dumping some tables (data only)"
+	@mysqldump --user=${DB_USER} --password=${DB_PASSWORD} ${DB_NAME} -t news__category > dumps/upgrade/v1_news__category.sql
+	@mysqldump --user=${DB_USER} --password=${DB_PASSWORD} ${DB_NAME} -t news__post_tag > dumps/upgrade/v1_news__post_tag.sql
+	@mysqldump --user=${DB_USER} --password=${DB_PASSWORD} ${DB_NAME} -t news__tag > dumps/upgrade/v1_news__tag.sql
+	@echo "Fixing v1 schema constraints, then upgrading to v2 schema..."
+	@mysql --user=${DB_USER} --password=${DB_PASSWORD} ${DB_NAME} < doc/upgrade/v1tov2.sql
+	@$(MAKE) schemaDb
+	@echo "TODO: copy news__tag into classification__tag..."
+	@echo "TODO: re-import news__post_tag using dump..."
+
 
 data: vendor/autoload.php
+	@echo
 	@echo "Install initial datas..."
 #	@php app/console dbal:data:initialize --purge
 	@php app/console fos:user:create admin --super-admin
