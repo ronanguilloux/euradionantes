@@ -84,7 +84,7 @@ dumps:
 mysqldump: dumps
 	@echo
 	@echo "Dumping existing db into ./dumps ..."
-	@mysqldump --user=${DB_USER} --password=${DB_PASSWORD} ${DB_NAME} > dumps/${NOW}.sql 2>/dev/null
+	@mysqldump --user=${DB_USER} --password=${DB_PASSWORD} ${DB_NAME} > 'dumps/${NOW}.sql' 2>/dev/null
 
 mysqlinfo: dumps
 	@echo
@@ -93,7 +93,7 @@ mysqlinfo: dumps
 dumps/remote/sql:
 	@echo
 	@echo "Fetching sql dump from remote backup into dumps/remote/sql..."
-	@scp euradion@176.31.243.202:/var/www/backup_bdd/euradionantes_prod_11-15--12.sql.gz dumps/remote/sql.gz
+	@scp XXXXX@YYYYY:/var/www/backup_bdd/euradionantes_prod_11-15--12.sql.gz dumps/remote/sql.gz
 	gunzip ./dumps/remote/sql.gz
 
 importRemote: dumps/remote/sql dropDb
@@ -104,16 +104,29 @@ importRemote: dumps/remote/sql dropDb
 
 mysqlimport: importRemote
 	@echo
-	@echo "Dumping some tables (data only)"
-	@mysqldump --user=${DB_USER} --password=${DB_PASSWORD} ${DB_NAME} -t news__category > dumps/upgrade/v1_news__category.sql
-	@mysqldump --user=${DB_USER} --password=${DB_PASSWORD} ${DB_NAME} -t news__post_tag > dumps/upgrade/v1_news__post_tag.sql
-	@mysqldump --user=${DB_USER} --password=${DB_PASSWORD} ${DB_NAME} -t news__tag > dumps/upgrade/v1_news__tag.sql
+	@echo "Dumping tables before update..."
+	@mysqldump --user=${DB_USER} --password=${DB_PASSWORD} ${DB_NAME} -t news__category > dumps/upgrade/v1_news__category.sql 2>/dev/null
+	@mysqldump --user=${DB_USER} --password=${DB_PASSWORD} ${DB_NAME} -t news__post_tag > dumps/upgrade/v1_news__post_tag.sql 2>/dev/null
+	@mysqldump --user=${DB_USER} --password=${DB_PASSWORD} ${DB_NAME} -t news__tag > dumps/upgrade/v1_news__tag.sql 2>/dev/null
+	@mysqldump --user=${DB_USER} --password=${DB_PASSWORD} ${DB_NAME} news__post > dumps/upgrade/v1_news__post.sql 2>/dev/null
+	@mysql --user=${DB_USER} --password=${DB_PASSWORD} ${DB_NAME} -e "SELECT CONCAT('UPDATE news__post SET collection_id=', COALESCE(category_id, 'NULL'), ' WHERE id=', id, ';') from news__post" > dumps/upgrade/v1_news__post_tmp.sql
+	@echo
+	@echo "Removing first line & trailing comma from news__post dump..."
+	@tail -n +2 dumps/upgrade/v1_news__post_tmp.sql > dumps/upgrade/v1_news__post_update
+	@echo
+	@echo "Removing temporary sql dumps..."
 	@echo "Fixing v1 schema constraints, then upgrading to v2 schema..."
 	@mysql --user=${DB_USER} --password=${DB_PASSWORD} ${DB_NAME} < doc/upgrade/v1tov2.sql
 	@$(MAKE) schemaDb
-	@echo "TODO: copy news__tag into classification__tag..."
-	@echo "TODO: re-import news__post_tag using dump..."
-
+	@echo "Copying news__tag rows into classification__tag..."
+	@sed -e "s/news__tag/classification__tag/g" dumps/upgrade/v1_news__tag.sql > dumps/upgrade/v2_classification__tag.sql
+	@mysql --user=${DB_USER} --password=${DB_PASSWORD} ${DB_NAME} < dumps/upgrade/v2_classification__tag.sql
+	@echo "Re-importing news__post_tag using dump..."
+	@mysql --user=${DB_USER} --password=${DB_PASSWORD} ${DB_NAME} < dumps/upgrade/v1_news__post_tag.sql
+	@echo "Re-importing classifications using dump..."
+	@mysql --user=${DB_USER} --password=${DB_PASSWORD} ${DB_NAME} < dumps/upgrade/v1_news__post_update
+#	@rm dumps/upgrade/*.sql
+	@rm dumps/upgrade/v1_news__post_update
 
 data: vendor/autoload.php
 	@echo
